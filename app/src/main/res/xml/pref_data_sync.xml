@@ -1,0 +1,25 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:defaultValue="1LO1100006"
+        android:entries="@array/vital_jacket_equipment_list"
+        android:entryValues="@array/vital_jacket_equipment_values"
+        android:key="sync_frequency"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/vital_jacket_equipment" />
+
+    <SwitchPreference
+        android:id="@+id/testswitch"
+        android:defaultValue="false"
+        android:dependency="sync_frequency"
+        android:key="device_connected"
+        android:title="@string/connect_device_title"/>
+
+
+
+
+</PreferenceScreen>

@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreference
+        android:id="@+id/hear_rate_switch"
+        android:defaultValue="false"
+        android:key="save_heart_rate"
+        android:title="@string/heart_rate_pref" />
+
+    <SwitchPreference
+        android:id="@+id/ecg_switch"
+        android:defaultValue="false"
+        android:key="save_ecg"
+        android:title="@string/ecg_pref"/>
+
+    <SwitchPreference
+        android:id="@+id/acc_switch"
+        android:defaultValue="false"
+        android:key="save_acc"
+        android:title="@string/save_acc_pref" />
+
+    <ListPreference
+        android:defaultValue="at rest"
+        android:entries="@array/physical_activity_list"
+        android:entryValues="@array/physical_activity_list"
+        android:key="physical_activity"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/physical_activity_title" />
+
+</PreferenceScreen>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        tools:context="pt.ua.ieeta.healthintegration.Login">
+
+
+        <ImageView
+            android:layout_marginTop = "20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="150dp"
+            android:maxHeight="131dp"
+            android:scaleType="fitCenter"
+            android:id="@+id/imageView"
+            android:src="@drawable/logo"
+            android:layout_centerHorizontal="true"
+            android:nestedScrollingEnabled="false" />
+
+
+        <EditText
+            android:inputType="text"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:id = "@+id/username"
+            android:hint = "Username"
+            android:focusable = "true"
+            android:textColorHint = "#08BBFF"
+            android:layout_marginTop = "30dp"
+            android:layout_alignParentLeft = "true"
+            android:layout_alignParentStart = "true"
+            android:layout_alignParentRight = "true"
+            android:layout_alignParentEnd = "true"
+            android:layout_below = "@+id/imageView"
+            android:imeOptions = "actionNext"
+            android:maxLines = "1"
+            />
+        <!--android:text="yyyy"-->
+       <!-- android:text="testdata"
+       android:text="newtest"-->
+        <EditText
+            android:layout_below="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/password"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/username"
+            android:layout_alignEnd="@+id/username"
+            android:textColorHint="#08BBFF"
+            android:hint="Password"
+            />
+        <!--android:text="111111"-->
+        <!--android:text="testdata"
+        android:text="111111"-->
+
+        <Button
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="100dp"
+            android:text="@string/Login"
+            android:onClick="doLogin"
+            android:id="@+id/btLogin"
+            android:textAllCaps="false"
+            android:layout_below = "@+id/password"/>
+
+    </LinearLayout>
+
+</ScrollView>
