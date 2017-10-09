@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity
                     if (countToHandle >100) {
                         countToHandle = 0;
                         BioLib.Output out = (BioLib.Output) msg.obj;
+                        System.out.println("BATTERY:" + out.battery);
                         handleWithDataHR(out.pulse);
                         handleWithDataACC(out.accValues.X, out.accValues.Y, out.accValues.Z);
                     }
