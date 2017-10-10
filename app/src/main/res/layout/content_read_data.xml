@@ -20,7 +20,7 @@
         android:layout_height="250sp"
         android:id="@+id/chart"
         android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="gone">
     </LinearLayout>
 
     <LinearLayout android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:orientation="horizontal"
         android:weightSum="2"
         android:id="@+id/lytHR"
-        android:visibility="invisible">
+        android:visibility="gone">
         <TextView
             android:id="@+id/lbl_HR"
             android:layout_width="match_parent"
@@ -49,7 +49,7 @@
         android:orientation="horizontal"
         android:weightSum="2"
         android:id="@+id/lytACC"
-        android:visibility="invisible">
+        android:visibility="gone">
         <TextView
             android:id="@+id/lbl_ACC"
             android:layout_width="match_parent"
@@ -70,7 +70,7 @@
         android:orientation="horizontal"
         android:weightSum="6"
         android:id="@+id/lytXYZ"
-        android:visibility="invisible">
+        android:visibility="gone">
         <TextView
             android:id="@+id/lbl_X"
             android:layout_width="match_parent"

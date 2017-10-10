@@ -95,9 +95,7 @@ public class ReadData extends AppCompatActivity {
                         chronoStarted = true;
                         SessionID = getCurrentSession();
                     }
-                    lytACC.setVisibility(View.VISIBLE);
-                    lytXYZ.setVisibility(View.VISIBLE);
-                    lytHR.setVisibility(View.VISIBLE);
+
 
                     countToHandle++;
                     if (countToHandle >100) {
@@ -105,27 +103,6 @@ public class ReadData extends AppCompatActivity {
                         countToHandle = 0;
                         BioLib.Output out = (BioLib.Output) msg.obj;
                         //System.out.println("BATTERY:" + out.battery);
-
-                        String pulse = "" + out.pulse;
-                        textHR.setText(pulse);
-                        String x_value = "" + out.accValues.X;
-                        String y_value = "" + out.accValues.Y;
-                        String z_value = "" + out.accValues.Z;
-
-                        textX.setText(x_value);
-                        textY.setText(y_value);
-                        textZ.setText(z_value);
-
-                        Float accelationSquareRoot = (out.accValues.X * out.accValues.X + out.accValues.Y * out.accValues.Y + out.accValues.Z * out.accValues.Z) /
-                                (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-                        double acceleration = Math.sqrt(accelationSquareRoot);
-                        double res = acceleration-3.456522103440785;
-                        if (res < 0.0) {
-                            res = 0.0;
-                            textACC.setText("" + res);
-                        } else {
-                            textACC.setText("" + res);
-                        }
 
                         handleWithDataHR(out.pulse);
                         handleWithDataACC(out.accValues.X, out.accValues.Y, out.accValues.Z);
@@ -271,6 +248,11 @@ public class ReadData extends AppCompatActivity {
     public void handleWithDataHR(int heart_rate) {
 
         if(settingsOpts.isRecordHeartRate()) {
+
+            lytHR.setVisibility(View.VISIBLE);
+            String pulse = "" + heart_rate;
+            textHR.setText(pulse);
+
             new heartRateSendtoDBTask().execute("" + heart_rate);
         }
     }
@@ -278,6 +260,27 @@ public class ReadData extends AppCompatActivity {
     public void handleWithDataACC(byte accX, byte accY, byte accZ) {
 
         if (settingsOpts.isRecordAccelerometer()) {
+            lytACC.setVisibility(View.VISIBLE);
+            lytXYZ.setVisibility(View.VISIBLE);
+
+            String x_value = "" + accX;
+            String y_value = "" + accY;
+            String z_value = "" + accZ;
+
+            textX.setText(x_value);
+            textY.setText(y_value);
+            textZ.setText(z_value);
+
+            Float accelationSquareRoot = (accX * accX + accY * accY + accZ * accZ) /
+                    (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+            double acceleration = Math.sqrt(accelationSquareRoot);
+            double res = acceleration-3.456522103440785;
+            if (res < 0.0) {
+                res = 0.0;
+                textACC.setText("" + res);
+            } else {
+                textACC.setText("" + res);
+            }
             new accelerometerSendtoDBTask().execute( ""+accX, ""+accY, ""+accZ );
         }
 
@@ -290,6 +293,8 @@ public class ReadData extends AppCompatActivity {
             for(int i=0;i<500;i++){
                 data[i]=ecg_data[i] & 0xFF;
             }
+
+
             updateECGChart(ecg_data);
             new ecgSendtoDBTask().execute(Arrays.toString(data));
         }
