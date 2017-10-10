@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="pt.ua.ieeta.healthintegration.ReadData"
+    tools:showIn="@layout/activity_read_data">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="250sp"
+        android:id="@+id/chart"
+        android:orientation="vertical"
+        android:visibility="invisible">
+    </LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:id="@+id/lytHR"
+        android:visibility="invisible">
+        <TextView
+            android:id="@+id/lbl_HR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:text="Heart-Rate:"
+            android:layout_weight="1"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/value_HR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:id="@+id/lytACC"
+        android:visibility="invisible">
+        <TextView
+            android:id="@+id/lbl_ACC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:text="Acceleration:"
+            android:layout_weight="1"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/value_ACC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="6"
+        android:id="@+id/lytXYZ"
+        android:visibility="invisible">
+        <TextView
+            android:id="@+id/lbl_X"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:text="X:"
+            android:layout_weight="1"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/value_X"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/lbl_Y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:text="Y:"
+            android:layout_weight="1"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/value_Y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/lbl_Z"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:text="Z:"
+            android:layout_weight="1"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/value_Z"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:id="@+id/STATUS">
+        <TextView
+            android:id="@+id/lbl_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:text="Connecting..."
+            android:layout_weight="1"
+            android:textSize="20sp"/>
+    </LinearLayout>
+
+</LinearLayout>

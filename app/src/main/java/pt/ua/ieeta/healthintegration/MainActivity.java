@@ -68,25 +68,12 @@ import Bio.Library.namespace.BioLib;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private BioLib lib;
-    private View viewmain;
-    FloatingActionButton stop;
     FloatingActionButton start;
     private boolean LoggedIN = false;
 
     Globals g = Globals.getInstance();
-    private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private SettingOptions settingsOpts;
-    private Chronometer chronometer;
-
-
-    private int SessionID;
-    private int hrReadNr;
-    private int accReadNr;
-    private int ecgReadNr;
-    private boolean chronoStarted = false;
-    private int countToHandle = 0;
 
     //get navigationView
     NavigationView navigationView;
@@ -103,73 +90,8 @@ public class MainActivity extends AppCompatActivity
     Structures dataSessions;
 
 
+    private View viewmain;
     private HashMap< Integer, HashMap< String, HashMap< Integer, JSONObject>>> allData;
-
-
-
-    private final Handler dataHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg)
-        {
-            switch (msg.what)
-            {
-                case BioLib.MESSAGE_READ:
-                    //Log.d("OnHANDLER - RECEIVED: " ,""+ msg.arg1);
-                    break;
-                case BioLib.MESSAGE_DATA_UPDATED:
-                    if (!chronoStarted && (settingsOpts.isRecordHeartRate() || settingsOpts.isRecordAccelerometer())) {
-                        chronometer.setVisibility(View.VISIBLE);
-                        chronometer.setBase(SystemClock.elapsedRealtime());
-                        chronometer.start();
-                        chronoStarted = true;
-                    }
-                    countToHandle++;
-                    if (countToHandle >100) {
-                        countToHandle = 0;
-                        BioLib.Output out = (BioLib.Output) msg.obj;
-                        System.out.println("BATTERY:" + out.battery);
-                        handleWithDataHR(out.pulse);
-                        handleWithDataACC(out.accValues.X, out.accValues.Y, out.accValues.Z);
-                    }
-                    break;
-                case BioLib.MESSAGE_ECG_STREAM:
-                    if (!chronoStarted && settingsOpts.isRecordECG()) {
-                        chronometer.setVisibility(View.VISIBLE);
-                        chronometer.setBase(SystemClock.elapsedRealtime());
-                        chronometer.start();
-                        chronoStarted = true;
-                    }
-                    handleWithDataECG((byte[][]) msg.obj);
-                    break;
-                case BioLib.STATE_CONNECTED:
-                    Snackbar.make(viewmain, "Connected with Device!", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    SessionID = getCurrentSession();
-                    hrReadNr = 0;
-                    ecgReadNr = 0;
-                    accReadNr = 0;
-                    start.setEnabled(false);
-                    start.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentGrey)));
-                    stop.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    stop.setEnabled(true);
-
-                    break;
-                case BioLib.UNABLE_TO_CONNECT_DEVICE:
-                    Snackbar.make(viewmain, "Unable to connect with device", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    break;
-                case BioLib.MESSAGE_DISCONNECT_TO_DEVICE:
-                    Snackbar.make(viewmain, "Disconnected to device VJ", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    chronometer.stop();
-                    chronometer.setVisibility(View.INVISIBLE);
-                    chronoStarted = false;
-                    fillPreviousSessions();
-                    break;
-            }
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,26 +99,27 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        pref = getSharedPreferences("info", MODE_PRIVATE);
-        chronometer = (Chronometer) findViewById(R.id.chronometer);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         menu = navigationView.getMenu();
         nav_signup = menu.findItem(R.id.sign_up);
+        final MainActivity mainActivity = this;
         start = (FloatingActionButton) findViewById(R.id.start);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                viewmain = view;
                 reloadSettingOptions();
-
+                viewmain = view;
                 if (isBluetoothEnabled()) {
                     if(settingsOpts.isUseThisDevice()) {
                         if (LoggedIN) {
-                            connectToDevice(settingsOpts.getDeviceAddress());
+                            Intent intent = new Intent(mainActivity, ReadData.class);
+                            startActivityForResult(intent,4);
                         }else {
                             Snackbar.make(view, "You should Login first", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
+                            Intent intent = new Intent(mainActivity, Login.class);
+                            startActivityForResult(intent,1);
                         }
 
                     } else {
@@ -210,21 +133,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        stop = (FloatingActionButton) findViewById(R.id.stop);
+/*        stop = (FloatingActionButton) findViewById(R.id.stop);
         stop.setEnabled(false);
         stop.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentGrey)));
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewmain = view;
                 stop.setEnabled(false);
                 stop.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentGrey)));
                 start.setEnabled(true);
                 start.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
                 System.out.println("On stop");
-                disconnectToDevice();
+                //disconnectToDevice();
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -266,6 +188,17 @@ public class MainActivity extends AppCompatActivity
             String physicalActivity = settings.getString("physical_activity", "at rest");
             textViewUserName = (TextView) findViewById(R.id.userTextName);
             textViewUserName.setText(g.getUsername() + " - " + physicalActivity);
+        } else if (requestCode == 4) {
+            fillPreviousSessions();
+            if(resultCode == Activity.RESULT_OK){
+                Snackbar.make(viewmain, "Disconnected to device VJ with Success", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            } else if (resultCode == 100) {
+                Snackbar.make(viewmain, "Unable to connect with device", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+
+
         }
     }
 
@@ -346,342 +279,6 @@ public class MainActivity extends AppCompatActivity
     public boolean isBluetoothEnabled() {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         return mBluetoothAdapter.isEnabled();
-    }
-
-    public void connectToDevice(String address) {
-        System.out.println("connecting to "+ address);
-        try {
-            lib = new BioLib(this, dataHandler);
-
-            Boolean connected = lib.Connect(address,5);
-            System.out.println("Connected!!!!!!!!!!!!!!!11"+connected);
-        }catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed!!!!!!!!!!!!!!!11");
-
-        }
-    }
-
-    public void disconnectToDevice() {
-        System.out.println("disconnecting");
-        try {
-            lib.Disconnect();
-        }catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed!!!!!!!!!!!!!!!11");
-        }
-    }
-
-    public int getCurrentSession (){
-
-        int session = 0;
-        try {
-            session = pref.getInt(g.getUsername(), 0);
-        }catch(Exception e){
-
-        }
-
-        if (session == 0) {
-            editor = pref.edit();
-            editor.putInt(g.getUsername(),1);
-            editor.commit();
-        }else {
-            editor = pref.edit();
-            editor.putInt(g.getUsername(),pref.getInt(g.getUsername(), 0) + 1);
-            editor.commit();
-        }
-        return session;
-    }
-
-    public void handleWithDataHR(int heart_rate) {
-
-       if(settingsOpts.isRecordHeartRate()) {
-           new heartRateSendtoDBTask().execute("" + heart_rate);
-       }
-
-    }
-
-    public void handleWithDataACC(byte accX, byte accY, byte accZ) {
-
-        if (settingsOpts.isRecordAccelerometer()) {
-            new accelerometerSendtoDBTask().execute( ""+accX, ""+accY, ""+accZ );
-        }
-
-    }
-
-    public void handleWithDataECG(byte[][] ecg){
-        if (settingsOpts.isRecordECG()) {
-            byte[] ecg_data = ecg[0];
-            int [] data = new int [500];
-            for(int i=0;i<500;i++){
-                data[i]=ecg_data[i] & 0xFF;
-            }
-
-            //TODO: Here send data to AsyncTask
-
-            //System.out.println("OnHANDLER-ECG:"+Arrays.toString(data));
-            new ecgSendtoDBTask().execute(Arrays.toString(data));
-        }
-    }
-
-    private class heartRateSendtoDBTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            Log.d("ON AsyncTask","IN");
-            JSONObject json=new JSONObject();
-            JSONArray values = new JSONArray();
-
-            String domain = getResources().getString(R.string.server_ip);
-            StringBuilder received = new StringBuilder();
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-            String dateString = sdf.format(new Date());
-
-            JSONObject data = null;
-            try {
-                JSONObject header = null;
-                JSONObject provenance = null;
-                JSONObject schema_id = null;
-                JSONObject time_frame = null;
-                JSONObject heart_rate = null;
-                JSONObject body = null;
-                provenance  = new JSONObject().put("source_name","MHealthIntegration-App").put("source_creation_date_time",dateString+"Z").put ("modality","sensed");
-                schema_id = new JSONObject().put("namespace", "omh").put("name","heart-rate").put("version","1.0");
-
-                header = new JSONObject().put("id", UUID.randomUUID().toString()).
-                        put("acquisition_provenance",provenance).
-                        put("schema_id",schema_id).put("user_id", g.getUsername());
-
-                time_frame = new JSONObject().put("date_time",dateString+"Z");
-                heart_rate = new JSONObject().put("unit","beats/min").
-                        put("value",Integer.parseInt(params[0])).
-                        put("session", SessionID).
-                        put("part_number", ++hrReadNr);
-
-                body = new JSONObject().put("effective_time_frame", time_frame).put("heart_rate", heart_rate).put("temporal_relationship_to_physical_activity", settingsOpts.getPhysicalActivity());
-
-                data = new JSONObject().put("header", header).
-                        put("body", body);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-            try {
-                URL url = new URL("http://"+domain+":8083/v1.0.M1/dataPoints");
-                HttpURLConnection conn = null;
-                conn = (HttpURLConnection) url.openConnection();
-
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Authorization","Bearer "+g.getToken());
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.connect();
-
-                String input = data.toString();
-                Log.d("PUT DataPoint:",input);
-
-                OutputStream os=null;
-                os = conn.getOutputStream();
-                os.write(input.getBytes());
-                os.flush();
-
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                    System.out.println("Error:"+conn.getResponseCode());
-                    return false;
-                }
-                else{
-                    System.out.println("HR - success - "+SessionID+ " - " +hrReadNr);
-                }
-
-                conn.disconnect();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return true;
-
-        }
-
-    }
-
-    private class accelerometerSendtoDBTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            Log.d("ON AsyncTask","IN");
-            JSONObject json=new JSONObject();
-
-            String domain = getResources().getString(R.string.server_ip);
-            StringBuilder received = new StringBuilder();
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-            String dateString = sdf.format(new Date());
-
-            JSONObject data = null;
-            try {
-                JSONObject header = null;
-                JSONObject provenance = null;
-                JSONObject schema_id = null;
-                JSONObject time_frame = null;
-                JSONObject accelerometer = null;
-                JSONObject values = null;
-                JSONObject body = null;
-                provenance  = new JSONObject().put("source_name","MHealthIntegration-App").put("source_creation_date_time",dateString+"Z").put ("modality","sensed");
-                schema_id = new JSONObject().put("namespace", "omh").put("name","accelerometer").put("version","1.0");
-
-                header = new JSONObject().put("id", UUID.randomUUID().toString()).
-                        put("acquisition_provenance",provenance).
-                        put("schema_id",schema_id).put("user_id", g.getUsername());
-
-                time_frame = new JSONObject().put("date_time",dateString+"Z");
-                values = new JSONObject().put("x", Integer.parseInt(params[0])).put("y", Integer.parseInt(params[1])).put("z", Integer.parseInt(params[2]));
-
-                accelerometer = new JSONObject().put("unit","mS").
-                        put("values",values).
-                        put("session", SessionID).
-                        put("part_number", ++accReadNr);
-
-                body = new JSONObject().put("effective_time_frame", time_frame).put("accelerometer", accelerometer).put("temporal_relationship_to_physical_activity", settingsOpts.getPhysicalActivity());
-
-                data = new JSONObject().put("header", header).
-                        put("body", body);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                URL url = new URL("http://"+domain+":8083/v1.0.M1/dataPoints");
-                HttpURLConnection conn = null;
-                conn = (HttpURLConnection) url.openConnection();
-
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Authorization","Bearer "+g.getToken());
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.connect();
-
-                String input = data.toString();
-                Log.d("PUT DataPoint:",input);
-
-                OutputStream os=null;
-                os = conn.getOutputStream();
-                os.write(input.getBytes());
-                os.flush();
-
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                    System.out.println("Error:"+conn.getResponseCode());
-                    return false;
-                }
-                else{
-                    System.out.println("ACC - success - "+SessionID+ " - " +accReadNr);
-                }
-
-                conn.disconnect();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return true;
-
-        }
-
-    }
-
-    private class ecgSendtoDBTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            Log.d("ON AsyncTask","IN");
-            JSONObject json=new JSONObject();
-            JSONArray values = new JSONArray();
-
-            String domain = getResources().getString(R.string.server_ip);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-            String dateString = sdf.format(new Date());
-
-            JSONObject header = null;
-            JSONObject data = null;
-            JSONObject provenance = null;
-            JSONObject schema_id = null;
-            JSONObject time_frame = null;
-            JSONObject ecg_data = null;
-            JSONObject body = null;
-            Log.d("json array",params[0]);
-            try {
-                provenance  = new JSONObject().put("source_name","MHealthIntegration-App").put("source_creation_date_time",dateString+"Z").put ("modality","sensed");
-                schema_id = new JSONObject().put("namespace", "omh").put("name","ecg").put("version","1.0");
-                header = new JSONObject().put("id", UUID.randomUUID().toString()).
-                        put("acquisition_provenance",provenance).
-                        put("schema_id",schema_id);
-
-
-                time_frame = new JSONObject().put("date_time",dateString+"Z");
-                JSONArray array = new JSONArray(params[0]);
-
-                ecg_data = new JSONObject().put("unit","uV").
-                        put("values",array).put("part_number",++ecgReadNr).put("session", SessionID);
-
-                body = new JSONObject().put("effective_time_frame", time_frame).put("ecg", ecg_data).put("temporal_relationship_to_physical_activity", settingsOpts.getPhysicalActivity());
-
-                data = new JSONObject().put("header", header).
-                        put("body", body);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                URL url = new URL("http://"+domain+":8083/v1.0.M1/dataPoints");
-                HttpURLConnection conn = null;
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Authorization","Bearer "+g.getToken());
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.connect();
-
-
-                String input = data.toString();
-                Log.d("PUT DataPoint", input);
-
-                OutputStream os=null;
-
-                os = conn.getOutputStream();
-                os.write(input.getBytes());
-                os.flush();
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                    System.out.println("Error:"+conn.getResponseCode());
-                    return false;
-                }
-                else{
-                    System.out.println("ECG - success - "+SessionID+ " - " +ecgReadNr);
-                }
-                conn.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-
     }
 
     public void fillPreviousSessions() {
