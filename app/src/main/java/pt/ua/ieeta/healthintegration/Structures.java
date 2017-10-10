@@ -9,9 +9,6 @@ import java.util.HashMap;
 public class Structures {
 
 
-    private JSONArray fromServerHR;
-    private JSONArray fromServerACC;
-    private JSONArray fromServerECG;
     private HashMap< Integer, JSONObject> dataSessionNumber;
     private HashMap< String, HashMap< Integer, JSONObject>> dataSessionType;
     private HashMap< Integer, HashMap< String, HashMap< Integer, JSONObject>>> allDataBySession;
@@ -24,7 +21,7 @@ public class Structures {
 
     public void fillDataWithHR(String data) {
         try {
-            fromServerHR = new JSONArray(data);
+            JSONArray fromServerHR = new JSONArray(data);
 
             int hrDataLength = fromServerHR.length();
             int currentSession = 0;
@@ -79,7 +76,7 @@ public class Structures {
             System.out.println("all filled"+ getAllDataBySession().toString());
 
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -87,7 +84,7 @@ public class Structures {
     public void fillDataWithACC(String data) {
         try {
             System.out.println("ALL DATA "+ getAllDataBySession());
-            fromServerACC = new JSONArray(data);
+            JSONArray fromServerACC = new JSONArray(data);
 
             int accDataLength = fromServerACC.length();
             int currentSession = 0;
@@ -142,14 +139,14 @@ public class Structures {
             System.out.println("all filled"+ getAllDataBySession().toString());
 
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
     }
 
 
     public void fillDataWithECG(String data) {
         try {
-            fromServerECG = new JSONArray(data);
+            JSONArray fromServerECG = new JSONArray(data);
 
             int ecgDataLength = fromServerECG.length();
             int currentSession = 0;
@@ -202,7 +199,7 @@ public class Structures {
             System.out.println("ecg all filled"+ getAllDataBySession().toString());
 
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
     }
 

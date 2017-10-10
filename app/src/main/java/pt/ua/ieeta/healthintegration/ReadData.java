@@ -12,13 +12,11 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,8 +67,6 @@ public class ReadData extends AppCompatActivity {
     private TextView status;
 
 
-
-    private LinearLayout chartLyt;
     private LinearLayout lytHR;
     private LinearLayout lytACC;
     private LinearLayout lytXYZ;
@@ -91,9 +87,6 @@ public class ReadData extends AppCompatActivity {
         {
             switch (msg.what)
             {
-                case BioLib.MESSAGE_READ:
-                    //Log.d("OnHANDLER - RECEIVED: " ,""+ msg.arg1);
-                    break;
                 case BioLib.MESSAGE_DATA_UPDATED:
                     if (!chronoStarted && (settingsOpts.isRecordHeartRate() || settingsOpts.isRecordAccelerometer())) {
                         chronometer.setVisibility(View.VISIBLE);
@@ -113,10 +106,15 @@ public class ReadData extends AppCompatActivity {
                         BioLib.Output out = (BioLib.Output) msg.obj;
                         //System.out.println("BATTERY:" + out.battery);
 
-                        textHR.setText("" + out.pulse);
-                        textX.setText("" + out.accValues.X);
-                        textY.setText("" + out.accValues.Y);
-                        textZ.setText("" + out.accValues.Z);
+                        String pulse = "" + out.pulse;
+                        textHR.setText(pulse);
+                        String x_value = "" + out.accValues.X;
+                        String y_value = "" + out.accValues.Y;
+                        String z_value = "" + out.accValues.Z;
+
+                        textX.setText(x_value);
+                        textY.setText(y_value);
+                        textZ.setText(z_value);
 
                         Float accelationSquareRoot = (out.accValues.X * out.accValues.X + out.accValues.Y * out.accValues.Y + out.accValues.Z * out.accValues.Z) /
                                 (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
@@ -299,7 +297,7 @@ public class ReadData extends AppCompatActivity {
 
     private void updateECGChart(byte[] ecg) {
 
-        chartLyt = (LinearLayout) findViewById(R.id.chart);
+        LinearLayout chartLyt = (LinearLayout) findViewById(R.id.chart);
         chartLyt.setVisibility(View.VISIBLE);
 
         if(!flag)
@@ -307,7 +305,7 @@ public class ReadData extends AppCompatActivity {
             if (chartView != null)
                 chartView.clearFocus();
         }
-        int x=0;
+        int x;
 
         int y=count*500;
 
@@ -320,25 +318,20 @@ public class ReadData extends AppCompatActivity {
         series.clear();
         for(x=0;x<500;x++)
         {
-            //if(x%2==0){
             allbytes[y]=ecg[x];
             y++;
-            //}
         }
         count++;
 
 
         for (x = 0; x < 2500; x++) {
             series.add(x, allbytes[x] & 0xFF);
-            int z = allbytes[x]&0xFF;
-            //Log.d("ECGVALUES", "" + z);
         }
 
         XYSeriesRenderer renderer = new XYSeriesRenderer();
         renderer.setLineWidth(0.2f);
         renderer.setColor(Color.RED);
         renderer.setDisplayBoundingPoints(true);
-        //renderer.setPointStyle(PointStyle.CIRCLE);
         renderer.setPointStrokeWidth(0.5f);
         XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(series);

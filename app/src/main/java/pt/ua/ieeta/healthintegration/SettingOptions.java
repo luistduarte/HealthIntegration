@@ -21,50 +21,24 @@ public class SettingOptions {
         return deviceAddress;
     }
 
-    public void setDeviceAddress(String deviceAddress) {
-        this.deviceAddress = deviceAddress;
-    }
-
     public boolean isUseThisDevice() {
         return useThisDevice;
-    }
-
-    public void setUseThisDevice(boolean useThisDevice) {
-        this.useThisDevice = useThisDevice;
     }
 
     public boolean isRecordHeartRate() {
         return recordHeartRate;
     }
 
-    public void setRecordHeartRate(boolean recordHeartRate) {
-        this.recordHeartRate = recordHeartRate;
-    }
-
     public boolean isRecordECG() {
         return recordECG;
-    }
-
-    public void setRecordECG(boolean recordECG) {
-        this.recordECG = recordECG;
     }
 
     public boolean isRecordAccelerometer() {
         return recordAccelerometer;
     }
 
-    public void setRecordAccelerometer(boolean recordAccelerometer) {
-        this.recordAccelerometer = recordAccelerometer;
-    }
-
     public String getPhysicalActivity() {
         return physicalActivity;
     }
-
-    public void setPhysicalActivity(String physicalActivity) {
-        this.physicalActivity = physicalActivity;
-    }
-
-
 
 }

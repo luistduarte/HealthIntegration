@@ -12,32 +12,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class Signup extends AppCompatActivity {
 
-    private EditText username,password1, password2;
-    private String usernameSrt,passwordStr1, passwordStr2;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -68,9 +56,9 @@ public class Signup extends AppCompatActivity {
     public void doSignUp(View v) {
 
 
-        username = (EditText)findViewById(R.id.username);
-        password1 = (EditText)findViewById(R.id.password1);
-        password2 = (EditText)findViewById(R.id.password2);
+        EditText username = (EditText) findViewById(R.id.username);
+        EditText password1 = (EditText) findViewById(R.id.password1);
+        EditText password2 = (EditText) findViewById(R.id.password2);
 
 
         String usernameStr = username.getText().toString();
@@ -90,9 +78,7 @@ public class Signup extends AppCompatActivity {
             int test = 0;
             try {
                 test = new checkCredentialsDBTask().execute(usernameStr, passwordStr1).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
             if (test==1) {
@@ -124,8 +110,7 @@ public class Signup extends AppCompatActivity {
                 json.put("username", params[0]).put("password", params[1]);
 
                 URL url = new URL("http://"+domain+":8082/users");
-                HttpURLConnection conn = null;
-                conn = (HttpURLConnection) url.openConnection();
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
@@ -136,8 +121,7 @@ public class Signup extends AppCompatActivity {
                 String input = json.toString();
                 Log.d("new user:",input);
 
-                OutputStream os=null;
-                os = conn.getOutputStream();
+                OutputStream os = conn.getOutputStream();
                 os.write(input.getBytes());
                 os.flush();
 
@@ -155,13 +139,7 @@ public class Signup extends AppCompatActivity {
                     conn.disconnect();
                     return 3;
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
+            } catch (JSONException | UnsupportedEncodingException | MalformedURLException | ProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();

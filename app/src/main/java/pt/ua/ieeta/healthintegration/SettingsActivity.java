@@ -4,7 +4,6 @@ package pt.ua.ieeta.healthintegration;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -19,7 +18,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;

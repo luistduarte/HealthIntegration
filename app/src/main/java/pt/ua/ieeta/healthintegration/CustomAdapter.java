@@ -34,7 +34,6 @@ public class CustomAdapter extends BaseAdapter{
         date=dateList;
         context=mainActivity;
         imageId=prgmImages;
-
         inflater = ( LayoutInflater )context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

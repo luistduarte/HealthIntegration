@@ -72,12 +72,11 @@ public class Info_Session extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info__session);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the secumViewPagertions adapter.
+
         mViewPager = (customViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setPagingEnabled(false);

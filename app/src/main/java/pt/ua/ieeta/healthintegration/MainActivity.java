@@ -2,21 +2,13 @@ package pt.ua.ieeta.healthintegration;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,44 +18,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Chronometer;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import Bio.Library.namespace.BioLib;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -72,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     private boolean LoggedIN = false;
 
     Globals g = Globals.getInstance();
-    private SharedPreferences.Editor editor;
     private SettingOptions settingsOpts;
 
     //get navigationView
@@ -91,7 +63,6 @@ public class MainActivity extends AppCompatActivity
 
 
     private View viewmain;
-    private HashMap< Integer, HashMap< String, HashMap< Integer, JSONObject>>> allData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,21 +104,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-/*        stop = (FloatingActionButton) findViewById(R.id.stop);
-        stop.setEnabled(false);
-        stop.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentGrey)));
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stop.setEnabled(false);
-                stop.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentGrey)));
-                start.setEnabled(true);
-                start.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                System.out.println("On stop");
-                //disconnectToDevice();
-            }
-        });*/
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -187,7 +143,9 @@ public class MainActivity extends AppCompatActivity
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             String physicalActivity = settings.getString("physical_activity", "at rest");
             textViewUserName = (TextView) findViewById(R.id.userTextName);
-            textViewUserName.setText(g.getUsername() + " - " + physicalActivity);
+            if (g.getUsername() != null) {
+                textViewUserName.setText(g.getUsername() + " - " + physicalActivity);
+            }
         } else if (requestCode == 4) {
             fillPreviousSessions();
             if(resultCode == Activity.RESULT_OK){
@@ -314,7 +272,7 @@ public class MainActivity extends AppCompatActivity
 
     public void fillListWithSessions() {
 
-        allData = dataSessions.getAllDataBySession();
+        HashMap<Integer, HashMap<String, HashMap<Integer, JSONObject>>> allData = dataSessions.getAllDataBySession();
         int[] listImgs = new int[allData.size()];
         String [] prgmNameList = new String[allData.size()];
         String [] timeList = new String[allData.size()];
