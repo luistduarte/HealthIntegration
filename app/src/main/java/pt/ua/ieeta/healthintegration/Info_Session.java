@@ -277,7 +277,7 @@ public class Info_Session extends AppCompatActivity {
                 mRenderer.setYAxisMax(230);
                 mRenderer.setYAxisMin(30);
                 mRenderer.setPanEnabled(true, true);
-                mRenderer.setZoomEnabled(true, true);
+                mRenderer.setZoomEnabled(true, false);
                 mRenderer.setShowGrid(true); // we show the grid
                 mRenderer.setLabelsTextSize(25);
                 mRenderer.setAxisTitleTextSize(40);

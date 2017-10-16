@@ -148,11 +148,12 @@ public class Login extends AppCompatActivity {
                 g.setData(accessToken);
                 g.setUsername(params[0]);
 
-                if (! accessToken.equals(""))return true;
-                else return false;
+                if (! accessToken.equals("")) {
+                    return true;
+                } else {
+                    return false;
+                }
             } catch (JSONException e) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_LONG);
-                toast.show();
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

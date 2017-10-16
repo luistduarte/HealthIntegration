@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity
     StringBuffer responseECG = new StringBuffer();
     Structures dataSessions;
 
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     private View viewmain;
 
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pref = getSharedPreferences("info", MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -291,9 +294,12 @@ public class MainActivity extends AppCompatActivity
             x++;
         }
         Arrays.sort(allSessionKeys);
-
-
         int i = allSessionKeys.length-1;
+
+        editor = pref.edit();
+        editor.putInt(g.getUsername(),allSessionKeys[i]+1);
+        editor.commit();
+
         int entryList = 0;
         for (; i>=0;i--) {
 
@@ -306,12 +312,16 @@ public class MainActivity extends AppCompatActivity
             {
                 System.out.println("Session:" + sessionKey+ " - readDP:" + readDP);
                 int max = 1;
+                int min = 1111111;
                 for (int part_number: allData.get(sessionKey).get(readDP).keySet()) {
                     if (part_number> max) {
                         max = part_number;
                     }
+                    if (part_number < min) {
+                        min = part_number;
+                    }
                 }
-                JSONObject minRead = allData.get(sessionKey).get(readDP).get(1);
+                JSONObject minRead = allData.get(sessionKey).get(readDP).get(min);
                 JSONObject maxRead = allData.get(sessionKey).get(readDP).get(max);
 
                 try {
