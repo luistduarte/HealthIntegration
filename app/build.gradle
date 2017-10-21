@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "pt.ua.ieeta.healthintegration"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -21,12 +21,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile files('libs/biolib.sdk.jar')
     compile files('libs/achartengine-1.1.0.jar')
-    compile group: 'com.google.code.gson', name: 'gson', version: '1.7.2'
-
 }

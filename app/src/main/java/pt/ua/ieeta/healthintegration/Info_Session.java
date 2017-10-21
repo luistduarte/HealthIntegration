@@ -5,29 +5,21 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -39,13 +31,10 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 public class Info_Session extends AppCompatActivity {
 

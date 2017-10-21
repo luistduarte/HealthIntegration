@@ -11,11 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import com.google.gson.Gson;
-
 public class CustomAdapter extends BaseAdapter{
     String [] result;
     Context context;
@@ -24,8 +19,6 @@ public class CustomAdapter extends BaseAdapter{
     String [] date;
     Globals g = Globals.getInstance();
 
-
-    Gson gson = new Gson();
     private static LayoutInflater inflater=null;
     public CustomAdapter(MainActivity mainActivity, String[] prgmNameList, int[] prgmImages, String [] timeList, String [] dateList) {
         // TODO Auto-generated constructor stub

@@ -84,7 +84,7 @@
     <string name="save_acc_pref">Use Accelerometer Values</string>
 
 
-    <string name="server_ip">192.168.1.207</string>
+    <string name="server_ip">192.168.1.66</string>
     <string name="physical_activity_title">Current Physical Activity</string>
     <string name="SignUP">Sign Up</string>
     <string name="title_signup">Sign Up</string>
