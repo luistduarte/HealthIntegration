@@ -295,10 +295,12 @@ public class MainActivity extends AppCompatActivity
         }
         Arrays.sort(allSessionKeys);
         int i = allSessionKeys.length-1;
+        if (i >= 0) {
+            editor = pref.edit();
+            editor.putInt(g.getUsername(),allSessionKeys[i]+1);
+            editor.commit();
+        }
 
-        editor = pref.edit();
-        editor.putInt(g.getUsername(),allSessionKeys[i]+1);
-        editor.commit();
 
         int entryList = 0;
         for (; i>=0;i--) {
